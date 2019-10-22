@@ -1,7 +1,7 @@
+use super::models::Submission;
 use super::schema::max_streaks;
 use crate::sql::MAX_INSERT_ROWS;
-use crate::utils::{GetEpochSecond, GetProblemId, GetUserId, SplitToSegments};
-
+use crate::utils::SplitToSegments;
 use chrono::Duration;
 use chrono::{DateTime, Datelike, FixedOffset, TimeZone, Utc};
 use diesel::pg::upsert::excluded;
@@ -10,22 +10,19 @@ use diesel::{insert_into, PgConnection, QueryResult};
 use std::cmp;
 use std::collections::BTreeMap;
 
-pub trait StreakUpdater<S> {
-    fn update_streak_count(&self, submissions: &[S]) -> QueryResult<()>;
+pub trait StreakUpdater {
+    fn update_streak_count(&self, submissions: &[Submission]) -> QueryResult<()>;
 }
 
-impl<S> StreakUpdater<S> for PgConnection
-where
-    S: GetUserId + GetProblemId + GetEpochSecond,
-{
-    fn update_streak_count(&self, ac_submissions: &[S]) -> QueryResult<()> {
+impl StreakUpdater for PgConnection {
+    fn update_streak_count(&self, ac_submissions: &[Submission]) -> QueryResult<()> {
         let mut submissions = ac_submissions
             .iter()
             .map(|s| {
                 (
-                    Utc.timestamp(s.get_epoch_second(), 0),
-                    s.get_user_id(),
-                    s.get_problem_id(),
+                    Utc.timestamp(s.epoch_second, 0),
+                    s.user_id.as_str(),
+                    s.problem_id.as_str(),
                 )
             })
             .collect::<Vec<_>>();

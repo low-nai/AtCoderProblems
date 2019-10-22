@@ -1,10 +1,10 @@
 use atcoder_problems_backend::sql::models::{Contest, Submission, UserSum};
 use atcoder_problems_backend::sql::schema::{contests, rated_point_sum};
-use atcoder_problems_backend::sql::{RatedPointSumClient, RatedPointSumUpdate};
+use atcoder_problems_backend::sql::RatedPointSumClient;
 use diesel::dsl::*;
 use diesel::prelude::*;
 
-pub mod utils;
+pub pub mod utils;
 
 const FIRST_AGC_EPOCH_SECOND: i64 = 1_468_670_400;
 const UNRATED_STATE: &str = "-";

@@ -1,22 +1,22 @@
+use super::models::Submission;
 use super::schema::{contests, rated_point_sum};
 use super::MAX_INSERT_ROWS;
 use super::{FIRST_AGC_EPOCH_SECOND, UNRATED_STATE};
-use crate::utils::{GetContestId, GetPoint, GetProblemId, GetUserId, SplitToSegments};
+use crate::utils::SplitToSegments;
 use diesel::dsl::*;
 use diesel::pg::upsert::excluded;
 use diesel::prelude::*;
 use diesel::{PgConnection, QueryResult};
 use std::collections::{BTreeMap, BTreeSet};
 
-pub trait RatedPointSumUpdate<S> {
-    fn update_rated_point_sum(&self, ac_submissions: &[S]) -> QueryResult<()>;
+pub trait RatedPointSumClient {
+    fn update_rated_point_sum(&self, ac_submissions: &[Submission]) -> QueryResult<()>;
+    fn get_users_rated_point_sum(&self, user_id: &str) -> QueryResult<f64>;
+    fn get_rated_point_sum_rank(&self, point: f64) -> QueryResult<i64>;
 }
 
-impl<S> RatedPointSumUpdate<S> for PgConnection
-where
-    S: GetUserId + GetProblemId + GetPoint + GetContestId,
-{
-    fn update_rated_point_sum(&self, ac_submissions: &[S]) -> QueryResult<()> {
+impl RatedPointSumClient for PgConnection {
+    fn update_rated_point_sum(&self, ac_submissions: &[Submission]) -> QueryResult<()> {
         let rated_contest_ids = contests::table
             .filter(contests::start_epoch_second.ge(FIRST_AGC_EPOCH_SECOND))
             .filter(contests::rate_change.ne(UNRATED_STATE))
@@ -27,8 +27,8 @@ where
 
         let rated_point_sum = ac_submissions
             .iter()
-            .filter(|s| rated_contest_ids.contains(s.get_contest_id()))
-            .map(|s| (s.get_user_id(), s.get_problem_id(), s.get_point()))
+            .filter(|s| rated_contest_ids.contains(&s.contest_id))
+            .map(|s| (s.user_id.as_str(), s.problem_id.as_str(), s.point))
             .fold(BTreeMap::new(), |mut map, (user_id, problem_id, point)| {
                 map.entry(user_id)
                     .or_insert_with(BTreeSet::new)
@@ -58,14 +58,7 @@ where
         }
         Ok(())
     }
-}
 
-pub trait RatedPointSumClient {
-    fn get_users_rated_point_sum(&self, user_id: &str) -> QueryResult<f64>;
-    fn get_rated_point_sum_rank(&self, point: f64) -> QueryResult<i64>;
-}
-
-impl RatedPointSumClient for PgConnection {
     fn get_users_rated_point_sum(&self, user_id: &str) -> QueryResult<f64> {
         rated_point_sum::table
             .filter(rated_point_sum::user_id.eq(user_id))

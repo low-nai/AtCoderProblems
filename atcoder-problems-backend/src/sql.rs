@@ -20,7 +20,7 @@ pub use contest_problem::ContestProblemClient;
 pub use language_count::LanguageCountClient;
 pub use problem_info::ProblemInfoUpdater;
 pub use problems_submissions::ProblemsSubmissionUpdater;
-pub use rated_point_sum::{RatedPointSumClient, RatedPointSumUpdate};
+pub use rated_point_sum::RatedPointSumClient;
 pub use simple_client::SimpleClient;
 pub use streak::StreakUpdater;
 pub use submission_client::{SubmissionClient, SubmissionRequest};

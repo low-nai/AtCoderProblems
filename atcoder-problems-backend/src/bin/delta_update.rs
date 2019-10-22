@@ -2,7 +2,7 @@ extern crate openssl; // Just for musl-compiler
 use openssl_probe; // Just for musl-compiler
 
 use atcoder_problems_backend::sql::{
-    AcceptedCountClient, LanguageCountClient, RatedPointSumUpdate, StreakUpdater, SubmissionClient,
+    AcceptedCountClient, LanguageCountClient, RatedPointSumClient, StreakUpdater, SubmissionClient,
     SubmissionRequest,
 };
 use diesel::{Connection, PgConnection};
