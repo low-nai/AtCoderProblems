@@ -4,7 +4,7 @@ use atcoder_problems_backend::sql::RatedPointSumClient;
 use diesel::dsl::*;
 use diesel::prelude::*;
 
-pub pub mod utils;
+pub mod utils;
 
 const FIRST_AGC_EPOCH_SECOND: i64 = 1_468_670_400;
 const UNRATED_STATE: &str = "-";
