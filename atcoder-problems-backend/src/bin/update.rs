@@ -5,7 +5,7 @@ use atcoder_problems_backend as backend;
 
 use backend::sql::{
     AcceptedCountClient, LanguageCountClient, ProblemInfoUpdater, ProblemsSubmissionUpdater,
-    RatedPointSumClient, StreakUpdater, SubmissionClient, SubmissionRequest,
+    RatedPointSumUpdate, StreakUpdater, SubmissionClient, SubmissionRequest,
 };
 use backend::utils::SplitToSegments;
 

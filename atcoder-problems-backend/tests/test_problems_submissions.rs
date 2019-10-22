@@ -4,7 +4,7 @@ use atcoder_problems_backend::sql::ProblemsSubmissionUpdater;
 use diesel::dsl::*;
 use diesel::prelude::*;
 
-mod utils;
+pub mod utils;
 
 fn get_first(conn: &PgConnection) -> Vec<(String, String, i64)> {
     first::table
