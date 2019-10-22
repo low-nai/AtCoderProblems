@@ -21,6 +21,7 @@ pub trait SubmissionClient {
     fn get_user_submission_count(&self, user_id: &str) -> QueryResult<i64>;
     fn get_submission_by_id(&self, id: i64) -> QueryResult<Option<Submission>>;
     fn update_submissions(&self, values: &[Submission]) -> QueryResult<usize>;
+    fn get_users(&self) -> QueryResult<Vec<String>>;
 }
 
 impl SubmissionClient for PgConnection {
@@ -77,5 +78,12 @@ impl SubmissionClient for PgConnection {
                 submissions::execution_time.eq(excluded(submissions::execution_time)),
             ))
             .execute(self)
+    }
+
+    fn get_users(&self) -> QueryResult<Vec<String>> {
+        submissions::table
+            .select(submissions::user_id)
+            .distinct()
+            .load(self)
     }
 }

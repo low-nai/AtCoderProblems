@@ -90,6 +90,8 @@ fn test_submission_client() {
 
     assert!(conn.get_submission_by_id(1).unwrap().is_some());
     assert!(conn.get_submission_by_id(9).unwrap().is_none());
+
+    assert_eq!(conn.get_users().unwrap().len(), 2);
 }
 
 #[test]
